@@ -1,8 +1,11 @@
 {
   "MappFyren": {
     "Monitoring": {
-      "IntervalSeconds": 5,
-      "Recursive": false
+      "IntervalSeconds": 3,
+      "Recursive": false,
+      "MaxParallelism": 3,
+      "PerFolderTimeoutSeconds": 5,
+      "ErrorBackoffSeconds": 15
     },
     "Shared": {
       "Name": "Common",
