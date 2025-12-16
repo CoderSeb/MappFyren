@@ -24,26 +24,22 @@ function Require-Command([string]$Name) {
   }
 }
 
-function Git-String([string[]]$Args) {
-  # Kör git och returnera alltid en string (aldrig $null)
-  return (& git @Args | Out-String).Trim()
+function Git-String {
+  param([Parameter(Mandatory)][string[]]$GitArgs)
+
+  # Returnera alltid en string (aldrig $null), och fånga även ev feltext
+  $out = (& git @GitArgs 2>&1 | Out-String).Trim()
+  return $out
 }
+
 
 Require-Command git
 Require-Command dotnet
 Require-Command gh
 
-# --- Se till att vi står på main
-$branch = Git-String @("rev-parse", "--abbrev-ref", "HEAD")
-if ($branch -ne "main") {
-  throw "Du står på branch '$branch'. Byt till 'main' innan release: git checkout main"
-}
+$branch  = Git-String "rev-parse","--abbrev-ref","HEAD"
+$remotes = Git-String "remote"
 
-# --- Se till att remote finns
-$remotes = Git-String @("remote")
-if ([string]::IsNullOrWhiteSpace($remotes)) {
-  throw "Ingen git remote hittad. Kör: git remote add origin <url>"
-}
 
 # --- Om repo är smutsigt: committa om CommitMessage finns, annars stoppa
 $dirty = & git status --porcelain
