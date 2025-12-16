@@ -13,6 +13,8 @@ x86/
 arm/
 arm64/
 AnyCPU/
+artifacts/
+**/publish/
 
 # VS / Rider / VS Code
 .vs/
