@@ -153,3 +153,5 @@ Från repo-roten:
 ```powershell
 dotnet build
 dotnet run --project .\MappFyren.App\MappFyren.App.csproj
+
+.\BuildZip.ps1 -Version 1.0.0 -OutputDir "D:\Releases\MappFyren" -SingleFile -SelfContained -Runtime win-x64
