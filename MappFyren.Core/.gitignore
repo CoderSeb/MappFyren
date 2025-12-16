@@ -1,0 +1,97 @@
+# =========================
+# MappFyren (.NET 8 + WPF)
+# =========================
+
+# Build output
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+arm/
+arm64/
+AnyCPU/
+
+# VS / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+# (Optional) if you use packages.lock.json and want it committed, remove next line
+packages.lock.json
+
+# Publish output
+**/publish/
+**/app.publish/
+
+# WPF/WinUI generated
+*.g.cs
+*.g.i.cs
+
+# Coverage
+.coverage
+.coveragexml
+**/coverage/
+**/coverage.* 
+**/TestResults/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# =========================
+# App-specific / local config
+# =========================
+
+# If settings.json is environment-specific, ignore it and commit a template instead.
+# Uncomment if you want that behavior:
+# MappFyren.App/settings.json
+
+# Local overrides (recommended pattern)
+settings.local.json
+**/settings.local.json
+
+# Secret files
+*.pfx
+*.snk
+*.key
+*.pem
+
+# SQLite / local data
+*.db
+*.sqlite
+*.sqlite3
+
+# Temp files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig

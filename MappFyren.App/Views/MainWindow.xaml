@@ -1,0 +1,308 @@
+<Window x:Class="MappFyren.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mon="clr-namespace:MappFyren.Core.Monitoring;assembly=MappFyren.Core"
+        mc:Ignorable="d"
+        Title="MappFyren"
+    Height="720"
+    Width="1180"
+        WindowStartupLocation="CenterScreen">
+
+  <Window.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Padding"
+          Value="12,8"/>
+      <Setter Property="Margin"
+          Value="0,0,8,0"/>
+    </Style>
+
+    <Style x:Key="IconButtonStyle"
+        TargetType="Button">
+      <Setter Property="Background"
+          Value="Transparent"/>
+      <Setter Property="BorderBrush"
+          Value="Transparent"/>
+      <Setter Property="BorderThickness"
+          Value="0"/>
+      <Setter Property="Padding"
+          Value="2"/>
+      <Setter Property="Cursor"
+          Value="Hand"/>
+      <Setter Property="HorizontalContentAlignment"
+          Value="Center"/>
+      <Setter Property="VerticalContentAlignment"
+          Value="Center"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver"
+            Value="True">
+          <Setter Property="Background"
+              Value="#11000000"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <!-- Subtil radfärgning per status (utan att förstöra selection) -->
+    <Style x:Key="FolderRowStyle"
+        TargetType="DataGridRow">
+      <Setter Property="Margin"
+          Value="0,1,0,1"/>
+      <Setter Property="ToolTip"
+          Value="{Binding Message}"/>
+      <Style.Triggers>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
+                Value="False"/>
+            <Condition Binding="{Binding State}"
+                Value="{x:Static mon:AlarmState.Ok}"/>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="Background"
+              Value="#1100A000"/>
+        </MultiDataTrigger>
+
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
+                Value="False"/>
+            <Condition Binding="{Binding State}"
+                Value="{x:Static mon:AlarmState.TooLow}"/>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="Background"
+              Value="#11C9A400"/>
+        </MultiDataTrigger>
+
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
+                Value="False"/>
+            <Condition Binding="{Binding State}"
+                Value="{x:Static mon:AlarmState.TooHigh}"/>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="Background"
+              Value="#11C97B00"/>
+        </MultiDataTrigger>
+
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}"
+                Value="False"/>
+            <Condition Binding="{Binding State}"
+                Value="{x:Static mon:AlarmState.Error}"/>
+          </MultiDataTrigger.Conditions>
+          <Setter Property="Background"
+              Value="#11C90000"/>
+        </MultiDataTrigger>
+      </Style.Triggers>
+    </Style>
+  </Window.Resources>
+
+  <Grid Margin="14">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Top bar -->
+    <DockPanel Grid.Row="0"
+        LastChildFill="False"
+        Margin="0,0,0,10">
+      <TextBlock DockPanel.Dock="Left"
+          FontSize="22"
+          FontWeight="SemiBold"
+          Text="MappFyren"/>
+      <StackPanel DockPanel.Dock="Right"
+          Orientation="Horizontal">
+        <Button Content="Uppdatera"
+            Command="{Binding RefreshNowCommand}"/>
+      </StackPanel>
+    </DockPanel>
+
+    <!-- Main -->
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="260"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="340"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Groups -->
+      <Border Grid.Column="0"
+          BorderBrush="#33000000"
+          BorderThickness="1"
+          CornerRadius="10"
+          Padding="10">
+        <StackPanel>
+          <TextBlock FontSize="14"
+              FontWeight="SemiBold"
+              Text="Grupper"
+              Margin="0,0,0,8"/>
+          <ListBox ItemsSource="{Binding Groups}"
+                   SelectedItem="{Binding SelectedGroup}"
+                   DisplayMemberPath="Name"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Folder list -->
+      <Border Grid.Column="1"
+          BorderBrush="#33000000"
+          BorderThickness="1"
+          CornerRadius="10"
+          Padding="10"
+          Margin="10,0">
+        <StackPanel>
+          <TextBlock FontSize="14"
+              FontWeight="SemiBold"
+              Text="{Binding SelectedGroup.Name}"
+              Margin="0,0,0,8"/>
+
+          <DataGrid ItemsSource="{Binding SelectedGroup.Folders}"
+                    SelectedItem="{Binding SelectedFolder}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    HeadersVisibility="Column"
+                    GridLinesVisibility="None"
+                    RowStyle="{StaticResource FolderRowStyle}">
+            <DataGrid.Columns>
+
+              <!-- Klickbar folder-ikon -->
+              <DataGridTemplateColumn Width="42"
+                  CanUserResize="False">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Button Style="{StaticResource IconButtonStyle}"
+                            Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding}"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="16"
+                            Content="&#xE838;"
+                            ToolTip="Öppna mapp"
+                            Width="28"
+                        Height="28"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTextColumn Header="Namn"
+                  Binding="{Binding Name}"
+                  Width="2*"/>
+              <DataGridTextColumn Header="Antal"
+                  Binding="{Binding Count}"
+                  Width="*"/>
+
+              <!-- Status med färgad prick -->
+              <DataGridTemplateColumn Header="Status"
+                  Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                      <Ellipse Width="10"
+                          Height="10"
+                          Margin="0,0,6,0">
+                        <Ellipse.Style>
+                          <Style TargetType="Ellipse">
+                            <Setter Property="Fill"
+                                Value="#99000000"/>
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding State}"
+                                  Value="{x:Static mon:AlarmState.Ok}">
+                                <Setter Property="Fill"
+                                    Value="#FF1E8E3E"/>
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding State}"
+                                  Value="{x:Static mon:AlarmState.TooLow}">
+                                <Setter Property="Fill"
+                                    Value="#FFF9AB00"/>
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding State}"
+                                  Value="{x:Static mon:AlarmState.TooHigh}">
+                                <Setter Property="Fill"
+                                    Value="#FFFB8C00"/>
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding State}"
+                                  Value="{x:Static mon:AlarmState.Error}">
+                                <Setter Property="Fill"
+                                    Value="#FFD93025"/>
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Ellipse.Style>
+                      </Ellipse>
+                      <TextBlock Text="{Binding State}"/>
+                    </StackPanel>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTextColumn Header="Senast"
+                                  Binding="{Binding LastCheckedUtc, StringFormat={}{0:HH:mm:ss}}"
+                                  Width="*"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </StackPanel>
+      </Border>
+
+      <!-- Details -->
+      <Border Grid.Column="2"
+          BorderBrush="#33000000"
+          BorderThickness="1"
+          CornerRadius="10"
+          Padding="10">
+        <StackPanel>
+          <TextBlock FontSize="14"
+              FontWeight="SemiBold"
+              Text="Detaljer"
+              Margin="0,0,0,8"/>
+          <TextBlock FontSize="16"
+              FontWeight="SemiBold"
+              Text="{Binding SelectedFolder.Name}"/>
+          <TextBlock Margin="0,4,0,10"
+              Text="{Binding SelectedFolder.Description}"
+              Opacity="0.75"/>
+
+          <TextBlock FontWeight="SemiBold"
+              Text="Sökväg"/>
+          <TextBox Margin="0,4,0,10"
+                   Text="{Binding SelectedFolder.Path, Mode=OneWay}"
+                   IsReadOnly="True"/>
+
+
+          <TextBlock FontWeight="SemiBold"
+              Text="Gränser"/>
+          <StackPanel Orientation="Horizontal"
+              Margin="0,4,0,10">
+            <TextBlock Text="Min:"
+                Margin="0,0,6,0"/>
+            <TextBlock Text="{Binding SelectedFolder.Min}"
+                Margin="0,0,12,0"/>
+            <TextBlock Text="Max:"
+                Margin="0,0,6,0"/>
+            <TextBlock Text="{Binding SelectedFolder.Max}"/>
+          </StackPanel>
+
+          <TextBlock FontWeight="SemiBold"
+              Text="Senaste status"/>
+          <TextBlock Margin="0,4,0,0"
+              Text="{Binding SelectedFolder.State}"/>
+          <TextBlock Margin="0,4,0,0"
+              Text="{Binding SelectedFolder.Message}"
+              Opacity="0.8"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <!-- Status bar -->
+    <Border Grid.Row="2"
+        Margin="0,10,0,0"
+        Padding="10,6"
+        CornerRadius="10"
+        BorderThickness="1"
+        BorderBrush="#22000000">
+      <TextBlock Text="{Binding StatusMessage}"
+          Opacity="0.8"/>
+    </Border>
+  </Grid>
+</Window>

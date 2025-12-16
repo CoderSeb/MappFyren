@@ -1,0 +1,46 @@
+{
+  "MappFyren": {
+    "Monitoring": {
+      "IntervalSeconds": 5,
+      "Recursive": false
+    },
+    "Shared": {
+      "Name": "Common",
+      "Folders": [
+        {
+          "Id": "shared-inbox",
+          "Name": "Common inbox",
+          "Description": "Common flow",
+          "Path": "D:\\Proggande\\NyttArkiv\\Test_Data\\TestBatches",
+          "Thresholds": { "Min": 0, "Max": 30 }
+        }
+      ]
+    },
+    "Groups": [
+      {
+        "Name": "Group One",
+        "Folders": [
+          {
+            "Id": "economy-1",
+            "Name": "Invoices",
+            "Description": "Description for invoices",
+            "Path": "C:\\Temp\\Ekonomi\\Fakturor",
+            "Thresholds": { "Min": 0, "Max": 200 }
+          }
+        ]
+      },
+      {
+        "Name": "Group Two",
+        "Folders": [
+          {
+            "Id": "it-logs",
+            "Name": "Logs",
+            "Description": "Description for logs",
+            "Path": "D:\\Proggande\\NyttArkiv\\Test_Data\\TEST_MAPPAR\\testWorkdir",
+            "Thresholds": { "Min": 0, "Max": 500 }
+          }
+        ]
+      }
+    ]
+  }
+}
